@@ -3,6 +3,7 @@ import Header from './components/Header'
 import NotesList from './components/NotesList'
 import Search from './components/Search'
 import { nanoid } from 'nanoid'
+import { ThemeProvider } from './context/ThemeContext'
 
 const App = () => {
 
@@ -56,18 +57,20 @@ const App = () => {
 
 
   return (
-    <div>
-      {/* Header Here */}
-      <Header />
-      {/* Search Bar Here */}
-      <Search handleSearchNote={setSearchText} />
-      {/* Notes List Here */}
-      <NotesList
-        notes={notes.filter((note) => (note.title.toLowerCase().includes(searchText) || note.body.toLowerCase().includes(searchText)))}
-        handleAddNote={addNote}
-        handleDeleteNote={deleteNote}
-      />
-    </div>
+    <ThemeProvider>
+      <div>
+        {/* Header Here */}
+        <Header />
+        {/* Search Bar Here */}
+        <Search handleSearchNote={setSearchText} />
+        {/* Notes List Here */}
+        <NotesList
+          notes={notes.filter((note) => (note.title.toLowerCase().includes(searchText) || note.body.toLowerCase().includes(searchText)))}
+          handleAddNote={addNote}
+          handleDeleteNote={deleteNote}
+        />
+      </div>
+    </ThemeProvider>
   )
 }
 
