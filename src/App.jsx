@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Header from './components/Header'
 import NotesList from './components/NotesList'
 import Search from './components/Search'
 import { nanoid } from 'nanoid'
 
 const App = () => {
-  
+
   const [notes, setNotes] = useState([
     {
       id: nanoid(),
@@ -19,21 +19,10 @@ const App = () => {
       body: "This is second note",
       date: "30/06/2019",
     },
-    {
-      id: nanoid(),
-      title: "Heading 3",
-      body: "Lorem ipsum, dolor sit amet consectetur.",
-      date: "20/09/2020",
-    },
-    {
-      id: nanoid(),
-      title: "Heading 3",
-      body: "This is third note",
-      date: "20/09/2020",
-    },
   ])
+  const [searchText, setSearchText] = useState("")
 
-  function addNote(title,body) {
+  function addNote(title, body) {
     const date = new Date()
     const newNote = {
       id: nanoid(),
@@ -46,18 +35,38 @@ const App = () => {
   }
 
   function deleteNote(id) {
-    const newNotes = notes.filter((note)=> note.id !== id)
+    const newNotes = notes.filter((note) => note.id !== id)
     setNotes(newNotes)
   }
+
+  useEffect(() => {
+    const savedNotes = JSON.parse(
+      localStorage.getItem('notes-app-react-data'))
+
+    if (savedNotes) {
+      setNotes(savedNotes)
+    }
+  }, [])
+
+
+  useEffect(() => {
+    localStorage.setItem('notes-app-react-data',
+      JSON.stringify(notes))
+  }, [notes])
+
 
   return (
     <div>
       {/* Header Here */}
       <Header />
       {/* Search Bar Here */}
-      <Search />
+      <Search handleSearchNote={setSearchText} />
       {/* Notes List Here */}
-      <NotesList notes={notes} handleAddNote={addNote} handleDeleteNote={deleteNote}/>
+      <NotesList
+        notes={notes.filter((note) => (note.title.toLowerCase().includes(searchText) || note.body.toLowerCase().includes(searchText)))}
+        handleAddNote={addNote}
+        handleDeleteNote={deleteNote}
+      />
     </div>
   )
 }
